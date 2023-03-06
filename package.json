@@ -12,6 +12,7 @@
     "@testing-library/user-event": "^7.2.1",
     "html2canvas": "^1.0.0-rc.5",
     "lzutf8": "^0.5.5",
+    "prettier": "^2.8.4",
     "react": "^16.13.1",
     "react-cursor-position": "^3.0.3",
     "react-device-detect": "^1.13.1",

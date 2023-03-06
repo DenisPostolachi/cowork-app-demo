@@ -15,8 +15,8 @@ import {
   UPDATE_OBJECT,
   SET_WALL,
   LOAD_FILE,
-  UPDATE_TEXT
-} from '../actions/types';
+  UPDATE_TEXT,
+} from "../actions/types";
 
 const initializeSheet = () => {
   const rows = [];
@@ -25,7 +25,7 @@ const initializeSheet = () => {
     const curRow = [];
     for (let j = 0; j < 150; j++) {
       // Create 100 items in each row
-      curRow.push(null)
+      curRow.push(null);
     }
     // add current row to rows array
     rows.push(curRow);
@@ -40,7 +40,7 @@ const initializeWalls = () => {
     const curRow = [];
     for (let j = 0; j < 150; j++) {
       // Create 100 items in each row
-      curRow.push(false)
+      curRow.push(false);
     }
     // add current row to rows array
     rows.push(curRow);
@@ -51,7 +51,7 @@ const initializeWalls = () => {
 const initState = {
   scale: {
     ft: 1,
-    in: 0
+    in: 0,
   },
   curShape: null,
   text: [],
@@ -61,22 +61,22 @@ const initState = {
   data: {
     anchors: initializeSheet(),
     edges: initializeSheet(),
-    selected: initializeSheet()
-  }
-}
+    selected: initializeSheet(),
+  },
+};
 
 const sheetReducer = (state = initState, action) => {
   switch (action.type) {
     case SET_SCALE:
       return {
         ...state,
-        scale: action.payload
-      }
+        scale: action.payload,
+      };
     case SET_NEW_FILE:
       return {
         scale: {
           ft: 1,
-          in: 0
+          in: 0,
         },
         curShape: null,
         text: [],
@@ -86,24 +86,24 @@ const sheetReducer = (state = initState, action) => {
         data: {
           anchors: initializeSheet(),
           edges: initializeSheet(),
-          selected: initializeSheet()
-        }
-      }
+          selected: initializeSheet(),
+        },
+      };
     case LOAD_FILE:
       return {
         ...initState,
-        ...action.payload
-      }
+        ...action.payload,
+      };
     case SET_CUR_SHAPE:
       return {
         ...state,
-        curShape: action.payload
-      }
+        curShape: action.payload,
+      };
     case ADD_TEXT:
       return {
         ...state,
-        text: [...state.text, action.payload]
-      }
+        text: [...state.text, action.payload],
+      };
     case UPDATE_TEXT:
       const newText = [...state.text];
       for (let i in newText) {
@@ -119,18 +119,18 @@ const sheetReducer = (state = initState, action) => {
       }
       return {
         ...state,
-        text: newText
-      }
+        text: newText,
+      };
     case DELETE_TEXT:
       return {
         ...state,
-        text: state.text.filter(el => el.id !== action.payload)
-      }
+        text: state.text.filter((el) => el.id !== action.payload),
+      };
     case DELETE_OBJECT:
       return {
         ...state,
-        objects: state.objects.filter(el => el.id !== action.payload)
-      }
+        objects: state.objects.filter((el) => el.id !== action.payload),
+      };
     case UPDATE_OBJECT:
       const newObjects = state.objects;
       for (let i in newObjects) {
@@ -141,13 +141,13 @@ const sheetReducer = (state = initState, action) => {
       }
       return {
         ...state,
-        objects: newObjects
-      }
+        objects: newObjects,
+      };
     case ADD_OBJECT:
       return {
         ...state,
-        objects: [...state.objects, action.payload]
-      }
+        objects: [...state.objects, action.payload],
+      };
     case SET_ANCHOR:
       const newAnchors = initializeSheet();
       if (action.payload) {
@@ -157,25 +157,25 @@ const sheetReducer = (state = initState, action) => {
         ...state,
         data: {
           ...state.data,
-          anchors: newAnchors
+          anchors: newAnchors,
         },
-        anchor: action.payload
-      }
+        anchor: action.payload,
+      };
     case UPDATE_EDGES:
       const newEdges = initializeSheet();
-      action.payload.forEach(edgePosition => {
+      action.payload.forEach((edgePosition) => {
         newEdges[edgePosition.x][edgePosition.y] = true;
       });
       return {
         ...state,
         data: {
           ...state.data,
-          edges: newEdges
-        }
-      }
+          edges: newEdges,
+        },
+      };
     case UPDATE_WALLS:
       const newWalls = [...state.walls];
-      action.payload.forEach(wallPosition => {
+      action.payload.forEach((wallPosition) => {
         newWalls[wallPosition.x][wallPosition.y] = true;
       });
       return {
@@ -184,13 +184,15 @@ const sheetReducer = (state = initState, action) => {
         data: {
           ...state.data,
           edges: initializeSheet(),
-        }
-      }
+        },
+      };
     case DELETE_WALLS:
       const newWalls1 = [...state.walls];
       for (let r = 0; r < state.data.selected.length; r++) {
         for (let c = 0; c < state.data.selected[0].length; c++) {
-          if (state.data.selected[r][c]) { newWalls1[r][c] = false; }
+          if (state.data.selected[r][c]) {
+            newWalls1[r][c] = false;
+          }
         }
       }
       return {
@@ -200,13 +202,15 @@ const sheetReducer = (state = initState, action) => {
         data: {
           ...state.data,
           selected: initializeSheet(),
-        }
-      }
+        },
+      };
     case CREATE_WALLS:
       const newWalls2 = [...state.walls];
       for (let r = 0; r < state.data.selected.length; r++) {
         for (let c = 0; c < state.data.selected[0].length; c++) {
-          if (state.data.selected[r][c]) { newWalls2[r][c] = true; }
+          if (state.data.selected[r][c]) {
+            newWalls2[r][c] = true;
+          }
         }
       }
       return {
@@ -216,30 +220,30 @@ const sheetReducer = (state = initState, action) => {
         data: {
           ...state.data,
           selected: initializeSheet(),
-        }
-      }
+        },
+      };
     case SET_WALL:
       const newWalls3 = [...state.walls];
       newWalls3[action.payload.row][action.payload.col] = action.payload.value;
       return {
         ...state,
-        walls: newWalls3
-      }
+        walls: newWalls3,
+      };
     case UPDATE_SELECTED:
       const newSelected = initializeSheet();
-      action.payload.forEach(selPosition => {
+      action.payload.forEach((selPosition) => {
         newSelected[selPosition.x][selPosition.y] = true;
       });
       return {
         ...state,
         data: {
           ...state.data,
-          selected: newSelected
-        }
-      }
+          selected: newSelected,
+        },
+      };
     default:
       return state;
   }
-}
+};
 
 export default sheetReducer;
