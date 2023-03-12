@@ -15,7 +15,7 @@ import {
   UPDATE_OBJECT,
   SET_WALL,
   LOAD_FILE,
-  UPDATE_TEXT,
+  UPDATE_TEXT, UPDATE_OBJECT_USER_DATA,
 } from "../actions/types";
 
 const initializeSheet = () => {
@@ -142,6 +142,18 @@ const sheetReducer = (state = initState, action) => {
       return {
         ...state,
         objects: newObjects,
+      };
+    case UPDATE_OBJECT_USER_DATA:
+      const newObjectsData = state.objects;
+      for (let i in newObjectsData) {
+        if (newObjectsData[i].id === action.payload.id) {
+          newObjectsData[i].userData.push(action.payload);
+          break; // Stop the loop
+        }
+      }
+      return {
+        ...state,
+        objects: newObjectsData,
       };
     case ADD_OBJECT:
       return {

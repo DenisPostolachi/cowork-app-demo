@@ -16,6 +16,7 @@ import {
   SET_WALL,
   LOAD_FILE,
   UPDATE_TEXT,
+  UPDATE_OBJECT_USER_DATA,
 } from "./types";
 import { v4 as uuidv4 } from "uuid";
 import { boxSize } from "../config";
@@ -38,12 +39,7 @@ export const addObject = (type) => {
       id: uuidv4(),
       type,
       position: { x: (boxSize + 1) * 2, y: (boxSize + 1) * 2 },
-      data: {
-        name: "Deny",
-        desc: "lorem",
-        from: "02-02-2023 15:15",
-        to: "02-02-2023 17:15",
-      },
+      userData: [],
     },
   };
 };
@@ -61,6 +57,20 @@ export const updateObject = (data) => {
   return {
     type: UPDATE_OBJECT,
     payload: { id: data.id, position: data.position },
+  };
+};
+
+// @param data: {id, userData}
+export const updateObjectUserData = (data) => {
+  return {
+    type: UPDATE_OBJECT_USER_DATA,
+    payload: {
+      id: data.id,
+      name: data.name,
+      desc: data.desc,
+      from: data.from,
+      to: data.to,
+    },
   };
 };
 

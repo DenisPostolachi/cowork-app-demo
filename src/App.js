@@ -7,9 +7,7 @@ import ToolBar from "./layout/ToolBar";
 import GridContainer from "./layout/GridContainer";
 import CoordinateToolTip from "./components/CoordinateToolTip";
 import MouseToolTip from "./components/MouseToolTip";
-import SetScaleModal from "./components/SetScaleModal";
 import { isMobile } from "react-device-detect";
-import logo from "./images/favicon.png";
 
 function App() {
   const theme = createMuiTheme({

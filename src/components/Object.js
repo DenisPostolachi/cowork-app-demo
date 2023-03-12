@@ -4,7 +4,8 @@ import {
   Paper,
   Button,
   Typography,
-  TextField, Icon,
+  TextField,
+  Icon,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import Draggable from "react-draggable";
@@ -15,6 +16,7 @@ import {
   updateSelected,
   deleteObject,
   updateObject,
+  updateObjectUserData,
 } from "../actions/sheetActions";
 import { setTool } from "../actions/toolActions";
 import { boxSize } from "../config";
@@ -184,15 +186,22 @@ const useStyles = makeStyles({
   },
 });
 
-function ObjectEl({ id, type, position, userData }) {
+function ObjectEl({ id, type, position }) {
   const classes = useStyles();
   const dispatch = useDispatch();
   const [editMode, setEditMode] = useState(true);
   const [imgRotation, setImgRotation] = useState(0);
   const [imgDirection, setImgDirection] = useState(1);
   const scale = useSelector((state) => state.sheet.scale);
+  const bookedPlaces = useSelector((state) => state.sheet.objects)
   const containerRef = useRef();
   const editBarRef = useRef();
+  const [userDataItem, setUserDataItem] = useState({
+    name: "",
+    desc: "",
+    from: "",
+    to: "",
+  });
 
   const handleMouseDown = (e) => {
     if (
@@ -212,6 +221,19 @@ function ObjectEl({ id, type, position, userData }) {
       document.removeEventListener("mousedown", handleMouseDown, false);
     };
   }, []);
+
+  const bookPlace = (event, id) => {
+    event.preventDefault();
+    const data = {
+      id: id,
+      name: userDataItem.name,
+      desc: userDataItem.desc,
+      from: userDataItem.from,
+      to: userDataItem.to,
+    };
+    dispatch(updateObjectUserData(data));
+    const currentPlace = bookedPlaces.filter(item => item.id === id)
+  };
 
   const rotateLeft = () => {
     switch (imgRotation) {
@@ -260,7 +282,6 @@ function ObjectEl({ id, type, position, userData }) {
   };
 
   const handleDelete = () => {
-    console.log("eqwewq");
     dispatch(deleteObject(id));
   };
 
@@ -614,38 +635,65 @@ function ObjectEl({ id, type, position, userData }) {
             </Button>
           </Tooltip>
 
-          <div
-            style={{ padding: "10px" }}
-            className={type === "SINGLE_DOOR" ? classes.hidden : null}
-          >
-            <Typography>Book as props.name</Typography>
-            <div>
-              <TextField
-                size="small"
-                id="name"
-                label="Name*"
-                variant="outlined"
-                style={{ marginBottom: "10px" }}
-              />
-            </div>
-            <div>
-              <TextField
-                size="small"
-                id="desc"
-                label="Description"
-                variant="outlined"
-              />
-            </div>
+          <div style={{ padding: "10px" }}>
+            <form onSubmit={(e) => bookPlace(e, id)}>
+              <div style={{ marginBottom: "10px" }}>
+                <TextField
+                  onChange={(e) =>
+                    setUserDataItem({ ...userDataItem, name: e.target.value })
+                  }
+                  value={userDataItem.name}
+                  size="small"
+                  id="name"
+                  label="Name*"
+                  variant="outlined"
+                />
+              </div>
+              <div style={{ marginBottom: "10px" }}>
+                <TextField
+                  onChange={(e) =>
+                    setUserDataItem({ ...userDataItem, desc: e.target.value })
+                  }
+                  value={userDataItem.desc}
+                  size="small"
+                  id="desc"
+                  label="Description"
+                  variant="outlined"
+                />
+              </div>
+              <div style={{ marginBottom: "10px" }}>
+                <TextField
+                  onChange={(e) =>
+                    setUserDataItem({ ...userDataItem, from: e.target.value })
+                  }
+                  value={userDataItem.from}
+                  size="small"
+                  id="from"
+                  label="From"
+                  variant="outlined"
+                />
+              </div>
+              <div style={{ marginBottom: "10px" }}>
+                <TextField
+                  onChange={(e) =>
+                    setUserDataItem({ ...userDataItem, to: e.target.value })
+                  }
+                  value={userDataItem.to}
+                  size="small"
+                  id="to"
+                  label="To"
+                  variant="outlined"
+                />
+              </div>
+              <input type="submit" value="Submit" />
+            </form>
           </div>
-          <div
-            style={{ padding: "10px" }}
-            className={type === "SINGLE_DOOR" ? classes.hidden : null}
-          >
+          <div style={{ padding: "10px" }}>
             <Typography>History</Typography>
-            <Typography>Name: {userData.name}</Typography>
-            <Typography>Description: {userData.desc}</Typography>
-            <Typography>From: {userData.from}</Typography>
-            <Typography>To: {userData.to}</Typography>
+            <Typography>Name: </Typography>
+            <Typography>Description: </Typography>
+            <Typography>From: </Typography>
+            <Typography>To: </Typography>
           </div>
         </Paper>
       ) : null}
