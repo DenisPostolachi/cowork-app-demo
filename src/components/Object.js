@@ -158,6 +158,7 @@ import queenBed from "../images/objects/queenBed.png";
 import queenBed90 from "../images/objects/queenBed90.png";
 import queenBed180 from "../images/objects/queenBed180.png";
 import queenBed270 from "../images/objects/queenBed270.png";
+import {log} from "lzutf8";
 
 const useStyles = makeStyles({
   root: {
@@ -193,7 +194,7 @@ function ObjectEl({ id, type, position }) {
   const [imgRotation, setImgRotation] = useState(0);
   const [imgDirection, setImgDirection] = useState(1);
   const scale = useSelector((state) => state.sheet.scale);
-  const bookedPlaces = useSelector((state) => state.sheet.objects)
+  const bookedPlaces = useSelector((state) => state.sheet.objects);
   const containerRef = useRef();
   const editBarRef = useRef();
   const [userDataItem, setUserDataItem] = useState({
@@ -202,6 +203,7 @@ function ObjectEl({ id, type, position }) {
     from: "",
     to: "",
   });
+  const [userDataHistory, setUserDataHistory] = useState([]);
 
   const handleMouseDown = (e) => {
     if (
@@ -232,7 +234,8 @@ function ObjectEl({ id, type, position }) {
       to: userDataItem.to,
     };
     dispatch(updateObjectUserData(data));
-    const currentPlace = bookedPlaces.filter(item => item.id === id)
+    const currentPlace = bookedPlaces.map((item) => item.userData);
+    setUserDataHistory([...userDataHistory, currentPlace]);
   };
 
   const rotateLeft = () => {
@@ -688,13 +691,19 @@ function ObjectEl({ id, type, position }) {
               <input type="submit" value="Submit" />
             </form>
           </div>
-          <div style={{ padding: "10px" }}>
-            <Typography>History</Typography>
-            <Typography>Name: </Typography>
-            <Typography>Description: </Typography>
-            <Typography>From: </Typography>
-            <Typography>To: </Typography>
-          </div>
+          {userDataHistory.length ? (
+            userDataHistory.map((item) => (
+              <div style={{ padding: "10px" }}>
+                <Typography>History</Typography>
+                <Typography>Name: {item.name}</Typography>
+                <Typography>Description: {item.desc}</Typography>
+                <Typography>From: {item.from}</Typography>
+                <Typography>To: {item.to}</Typography>
+              </div>
+            ))
+          ) : (
+            <Typography>No Booking Data</Typography>
+          )}
         </Paper>
       ) : null}
     </>
